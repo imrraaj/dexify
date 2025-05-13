@@ -1,0 +1,132 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 30 100% 98%;
+    --foreground: 25 10% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 25 10% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 10% 10%;
+
+    --primary: 24 95% 53%;
+    --primary-foreground: 30 100% 98%;
+
+    --secondary: 24 94% 94%;
+    --secondary-foreground: 25 10% 10%;
+
+    --muted: 24 5% 88%;
+    --muted-foreground: 25 5% 45%;
+
+    --accent: 24 94% 94%;
+    --accent-foreground: 25 10% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 24 5% 88%;
+    --input: 24 5% 88%;
+    --ring: 24 95% 53%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 30 100% 98%;
+    --sidebar-foreground: 25 10% 10%;
+    --sidebar-primary: 24 95% 53%;
+    --sidebar-primary-foreground: 30 100% 98%;
+    --sidebar-accent: 24 94% 94%;
+    --sidebar-accent-foreground: 25 10% 10%;
+    --sidebar-border: 24 5% 88%;
+    --sidebar-ring: 24 95% 53%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 30 6% 95%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 30 6% 95%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 30 6% 95%;
+
+    --primary: 24 95% 53%;
+    --primary-foreground: 30 6% 95%;
+
+    --secondary: 12 6% 15%;
+    --secondary-foreground: 30 6% 95%;
+
+    --muted: 12 6% 15%;
+    --muted-foreground: 24 5% 65%;
+
+    --accent: 12 6% 15%;
+    --accent-foreground: 30 6% 95%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 12 6% 15%;
+    --input: 12 6% 15%;
+    --ring: 24 75% 50%;
+    
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 24 95% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 24 75% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(249, 115, 22, 0.5);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(249, 115, 22, 0.7);
+  }
+}
+
+/* For Chrome, Safari and Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Add type definition for window.ethereum */
+interface Window {
+  ethereum?: any;
+}
