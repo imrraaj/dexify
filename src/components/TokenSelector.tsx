@@ -15,6 +15,7 @@ import { Token } from "@/config/chains";
 import TokenImage from "./TokenImage";
 import { useSettings } from "@/hooks/use-setting";
 import { fetchBalance } from "@/lib/utils";
+import ERC20 from "@/data/ERC20.abi.json";
 
 interface TokenSelectorProps {
     selectedToken: Token | null;
@@ -51,13 +52,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
             const walletAddress = await (
                 await provider.getSigner()
             ).getAddress();
-            const erc20Abi = [
-                "function name() view returns (string)",
-                "function symbol() view returns (string)",
-                "function decimals() view returns (uint8)",
-                "function balanceOf(address) view returns (uint256)",
-            ];
-            const contract = new ethers.Contract(address, erc20Abi, provider);
+            const contract = new ethers.Contract(address, ERC20, provider);
             const [name, symbol, decimals, balance] = await Promise.all([
                 contract.name(),
                 contract.symbol(),

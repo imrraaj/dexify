@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { ethers } from "ethers"
 import QUOTER_ABI from "@/data/quoter.abi.json"
-import ERC20 from "@/data/erc20.abi.json"
+import ERC20 from "@/data/ERC20.abi.json"
 import SWAPROUTER_ABI from "@/data/swapRouter.abi.json"
 import { Chain, Token } from "@/config/chains";
 
