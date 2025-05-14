@@ -211,7 +211,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
   return (
     <>
       <Button
-        disabled={isConnecting || isSwapping || disabled}
+        disabled={walletAddress && (isConnecting || isSwapping || disabled)}
         onClick={handleSwap}
         className={`w-full text-white font-medium py-3 rounded-lg transition-all ${
           isConnected 
