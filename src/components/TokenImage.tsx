@@ -10,8 +10,8 @@ interface TokenImageProps {
 const getBackgroundColor = (symbol: string): string => {
   const charCode = symbol.charCodeAt(0);
   const hue = charCode % 360;
-  
-  return `hsl(${hue}, 70%, 45%)`;
+  return `#059669`;
+  // return `hsl(${hue}, 70%, 45%)`;
 };
 
 const TokenImage: React.FC<TokenImageProps> = ({ symbol, size = 'md', className = '' }) => {

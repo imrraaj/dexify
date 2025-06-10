@@ -196,7 +196,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
                                                 token.address && (
                                                 <Check
                                                     size={16}
-                                                    className="text-base-secondary"
+                                                    className="text-emerald-600"
                                                 />
                                             )}
                                         </div>

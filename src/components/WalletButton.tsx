@@ -213,10 +213,10 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       <Button
         disabled={walletAddress && (isConnecting || isSwapping || disabled)}
         onClick={handleSwap}
-        className={`w-full text-white py-3 rounded-lg transition-all font-black ${
+        className={`w-full text-white py-3 rounded-lg transition-all font-bold ${
           isConnected 
             ? 'bg-gradient-to-r from-emerald-400 to-emerald-500 hover:opacity-90' 
-            : 'bg-emerald-900 hover:bg-emerald-600'
+            : 'bg-emerald-600 hover:bg-emerald-500'
         }`}
       >
         {isConnecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

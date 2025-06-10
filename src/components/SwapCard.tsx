@@ -235,7 +235,7 @@ const SwapCard = () => {
     }
 
     return (
-        <div className="w-full max-w-md mx-auto">
+        <div className="w-full max-w-lg mx-auto">
             <Card className="bg-base-card border-zinc-700/50 dark:border-zinc-700/50 shadow-xl">
                 <CardContent className="p-4">
                     <div className="flex justify-between items-center mb-4">
@@ -294,7 +294,7 @@ const SwapCard = () => {
                     <div className="space-y-4">
                         <div className="bg-zinc-800/50 dark:bg-zinc-800/50 rounded-lg p-4">
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm text-base-muted">
+                                <span className="text-sm font-medium text-base-muted">
                                     You pay
                                 </span>
                                 {fromToken && fromToken.balance && (
@@ -363,12 +363,12 @@ const SwapCard = () => {
 
                         <div className="bg-zinc-800/50 dark:bg-zinc-800/50 rounded-lg p-4">
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm text-base-muted">
+                                <span className="text-sm font-medium text-base-muted">
                                     You receive
                                 </span>
                                 {toToken && toToken.balance && (
                                     <span className="text-sm text-base-muted font-medium">
-                                        Balance: {Number.parseFloat(fromToken.balance).toFixed(4)}
+                                        Balance: {Number.parseFloat(toToken.balance).toFixed(4)}
                                     </span>
                                 )}
                             </div>

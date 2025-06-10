@@ -17,7 +17,7 @@ const Index = () => {
                         defaultValue="swap"
                         value={activeTab}
                         onValueChange={setActiveTab}
-                        className="w-full max-w-md"
+                        className="w-full max-w-lg"
                     >
                         <TabsList className="grid grid-cols-2 mb-4 bg-emerald-100/30 dark:bg-zinc-800/30">
                             <TabsTrigger

@@ -164,7 +164,7 @@ const SendToken = () => {
     };
 
     return (
-        <div className="w-full max-w-md mx-auto">
+        <div className="w-full max-w-lg mx-auto">
             <Card className="bg-base-card border-zinc-700/50 shadow-xl">
                 <CardContent className="p-4">
                     <div className="flex justify-between items-center mb-4">
