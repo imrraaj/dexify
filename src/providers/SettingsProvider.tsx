@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { Chain, chains } from "@/config/chains";
 import { useToast } from "@/hooks/use-toast";
 import { Token } from "@/config/chains";
+import { UnsupportedChainError } from "@/components/UnsupportedChainError"
 
 export interface SettingsContextType {
     activeChain: Chain;
@@ -22,11 +23,12 @@ export const SettingsProvider = ({
 }) => {
     const [activeChain, setActiveChain] = useState<Chain>(chains.base);
     const [activeChainTokenList, setActiveChainTokenList] = useState<Token[]>(
-        Object.values(activeChain.tokens)
+        activeChain && activeChain.tokens ? Object.values(activeChain.tokens) : []
     );
     useEffect(() => {
-        setActiveChainTokenList(Object.values(activeChain.tokens));
+        setActiveChainTokenList(activeChain && activeChain.tokens ? Object.values(activeChain.tokens) : []);
     }, [activeChain]);
+
     const { toast } = useToast();
 
     useEffect(() => {
@@ -34,8 +36,6 @@ export const SettingsProvider = ({
         if (savedChain && chains[savedChain]) {
             setActiveChain(chains[savedChain]);
         }
-
-        // Auto detect chain on initial load
         detectChain();
     }, []);
 
@@ -64,22 +64,16 @@ export const SettingsProvider = ({
                     method: "eth_chainId",
                 });
                 const networkId = parseInt(chainId, 16);
-
-                // Find matching chain
                 const chainKey = Object.keys(chains).find(
                     (key) => chains[key].chainId === networkId
                 );
-
-                if (chainKey) {
-                    setActiveChain(chains[chainKey]);
-                }
+                setActiveChain(chains[chainKey] ?? chains.base);
             }
         } catch (error) {
             console.error("Error detecting chain:", error);
         }
     };
 
-    
 
     return (
         <SettingsContext.Provider
@@ -91,7 +85,13 @@ export const SettingsProvider = ({
                 detectChain
             }}
         >
-            {children}
+            {activeChain === null ? (
+                <React.Suspense fallback={<div>Loading network check...</div>}>
+                    <UnsupportedChainError />
+                </React.Suspense>
+            ) : (
+                children
+            )}
         </SettingsContext.Provider>
     );
 };

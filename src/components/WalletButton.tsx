@@ -216,7 +216,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
         className={`w-full text-white font-medium py-3 rounded-lg transition-all ${
           isConnected 
             ? 'bg-gradient-to-r from-base-secondary to-base-tertiary hover:opacity-90' 
-            : 'bg-base-primary hover:bg-blue-600'
+            : 'bg-zinc-900 hover:bg-zinc-600'
         }`}
       >
         {isConnecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
