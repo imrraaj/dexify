@@ -58,7 +58,7 @@ const SwapSettings: React.FC<SwapSettingsProps> = ({
         <div>
           <div className="flex justify-between mb-2">
             <span className="text-sm text-base-text">Slippage Tolerance</span>
-            <span className="text-sm font-medium text-base-secondary">{slippage}%</span>
+            <span className="text-sm font-black text-emerald-400">{slippage}%</span>
           </div>
           
           <div className="flex gap-2 mb-2">
@@ -70,7 +70,7 @@ const SwapSettings: React.FC<SwapSettingsProps> = ({
                 onClick={() => setSlippage(value)}
                 className={`flex-1 ${
                   slippage === value
-                    ? 'bg-base-secondary hover:bg-base-tertiary text-white'
+                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
                     : 'bg-transparent border border-zinc-700 text-base-muted hover:bg-zinc-800/50 hover:text-base-text'
                 }`}
               >
@@ -91,7 +91,7 @@ const SwapSettings: React.FC<SwapSettingsProps> = ({
             </div>
           </div>
           
-          <Slider
+          {/* <Slider
             defaultValue={[slippage]}
             value={[slippage]}
             max={5}
@@ -99,7 +99,7 @@ const SwapSettings: React.FC<SwapSettingsProps> = ({
             step={0.1}
             onValueChange={handleSlippageChange}
             className="mt-4"
-          />
+          /> */}
         </div>
 
         <div>

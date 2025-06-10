@@ -27,7 +27,7 @@ export const UnsupportedChainError = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-orange-50 dark:from-base-background dark:to-zinc-900 text-zinc-900 dark:text-base-text transition-colors duration-300">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-emerald-50 dark:from-base-background dark:to-zinc-900 text-zinc-900 dark:text-base-text transition-colors duration-300">
             <Card className="w-full max-w-md shadow-lg bg-transparent">
                 <CardHeader>
                     <CardTitle className="text-2xl mx-auto font-black">Unsupported Network</CardTitle>
@@ -40,7 +40,7 @@ export const UnsupportedChainError = () => {
                         {supportedChains.map((chain) => (
                             <Button
                                 key={chain.chainId}
-                                className="hover:bg-orange-500 dark:text-white bg-transparent text-black w-fit font-semibold"
+                                className="hover:bg-emerald-500 dark:text-white bg-transparent text-black w-fit font-semibold"
                                 variant="outline"
                                 onClick={() => handleSwitchChain(chain.chainId)}
                             >

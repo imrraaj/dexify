@@ -7,9 +7,9 @@ const SettingsMenu = () => {
     return (
         <button onClick={toggleTheme} title={theme} className="flex items-center rounded-full p-3 hover:bg-gray-100 dark:hover:bg-gray-800">
             {theme === "dark" ? (
-                <Sun className="h-4 w-4 text-orange-400" />
+                <Sun className="h-4 w-4 text-emerald-400" />
             ) : (
-                <Moon className="h-4 w-4 text-orange-400" />
+                <Moon className="h-4 w-4 text-emerald-400" />
             )}
         </button>
     );

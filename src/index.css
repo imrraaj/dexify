@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -124,9 +125,4 @@ input::-webkit-inner-spin-button {
 /* For Firefox */
 input[type=number] {
   -moz-appearance: textfield;
-}
-
-/* Add type definition for window.ethereum */
-interface Window {
-  ethereum?: any;
 }

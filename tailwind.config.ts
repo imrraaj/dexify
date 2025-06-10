@@ -19,10 +19,13 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'sans': ["Rubik", "sans-serif"],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
+				ring: '#10b981',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {

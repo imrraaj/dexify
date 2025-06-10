@@ -171,8 +171,8 @@ const SendToken = () => {
                         <h2 className="text-xl font-medium text-base-text">
                             Send
                         </h2>
-                        <div className="rounded-full bg-orange-900/20 py-1 px-3 flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse-slow"></span>
+                        <div className="rounded-full bg-emerald-900/20 py-1 px-3 flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow"></span>
                             <span className="text-xs font-medium text-base-text">
                                 {activeChain.name}
                             </span>

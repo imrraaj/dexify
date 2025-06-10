@@ -6,7 +6,7 @@ const Header = () => {
             <div className="flex justify-between items-center">
                 <div className="flex items-center">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="16"
@@ -27,7 +27,7 @@ const Header = () => {
                                 <path d="M3 21 12 12" />
                             </svg>
                         </div>
-                        <h1 className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-orange-600">
+                        <h1 className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-600">
                             DEXify
                         </h1>
                     </div>

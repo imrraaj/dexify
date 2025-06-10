@@ -8,7 +8,7 @@ const Index = () => {
     const [activeTab, setActiveTab] = useState("swap");
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-white to-orange-50 dark:from-base-background dark:to-zinc-900 text-zinc-900 dark:text-base-text transition-colors duration-300">
+        <div className="min-h-screen bg-gradient-to-b from-white to-emerald-50 dark:from-base-background dark:to-zinc-900 text-zinc-900 dark:text-base-text transition-colors duration-300">
             <div className="container mx-auto px-4 max-w-7xl">
                 <Header />
 
@@ -19,16 +19,16 @@ const Index = () => {
                         onValueChange={setActiveTab}
                         className="w-full max-w-md"
                     >
-                        <TabsList className="grid grid-cols-2 mb-4 bg-orange-100/30 dark:bg-zinc-800/30">
+                        <TabsList className="grid grid-cols-2 mb-4 bg-emerald-100/30 dark:bg-zinc-800/30">
                             <TabsTrigger
                                 value="swap"
-                                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white dark:data-[state=active]:bg-orange-600"
+                                className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white dark:data-[state=active]:bg-emerald-600"
                             >
                                 Swap
                             </TabsTrigger>
                             <TabsTrigger
                                 value="send"
-                                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white dark:data-[state=active]:bg-orange-600"
+                                className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white dark:data-[state=active]:bg-emerald-600"
                             >
                                 Send
                             </TabsTrigger>
@@ -49,7 +49,7 @@ const Index = () => {
 
             {/* Background gradient effect */}
             <div className="fixed top-0 left-0 right-0 h-[50vh] pointer-events-none -z-10">
-                <div className="absolute inset-0 bg-gradient-radial from-orange-200/10 to-transparent dark:from-orange-500/5 dark:to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-radial from-emerald-200/10 to-transparent dark:from-emerald-500/5 dark:to-transparent"></div>
             </div>
         </div>
     );

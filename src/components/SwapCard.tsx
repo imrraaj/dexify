@@ -263,8 +263,8 @@ const SwapCard = () => {
                             >
                                 <RefreshCw size={20} />
                             </Button>
-                            <div className="rounded-full bg-orange-900/20 py-1 px-3 flex items-center gap-1.5">
-                                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse-slow"></span>
+                            <div className="rounded-full bg-emerald-900/20 py-1 px-3 flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow"></span>
                                 <span className="text-xs font-medium text-base-text">
                                     {activeChain.name}
                                 </span>
@@ -299,7 +299,7 @@ const SwapCard = () => {
                                 </span>
                                 {fromToken && fromToken.balance && (
                                     <span
-                                        className="text-sm text-base-muted cursor-pointer"
+                                        className="text-sm text-base-muted cursor-pointer font-medium"
                                         onClick={async () => {
                                             dispatch({
                                                 type: "SET_FROM_AMOUNT",
@@ -325,7 +325,7 @@ const SwapCard = () => {
                                             }
                                         }}
                                     >
-                                        Balance: {fromToken.balance}
+                                        Balance: {Number.parseFloat(fromToken.balance).toFixed(4)}
                                     </span>
                                 )}
                             </div>
@@ -335,7 +335,7 @@ const SwapCard = () => {
                                     value={fromAmount}
                                     onChange={handleFromAmountChange}
                                     placeholder="0.0"
-                                    className="w-full bg-transparent text-2xl text-base-text dark:text-base-text outline-none"
+                                    className="w-full bg-transparent text-2xl font-bold text-base-text dark:text-base-text outline-none"
                                 />
                                 <TokenSelector
                                     selectedToken={fromToken}
@@ -367,8 +367,8 @@ const SwapCard = () => {
                                     You receive
                                 </span>
                                 {toToken && toToken.balance && (
-                                    <span className="text-sm text-base-muted">
-                                        Balance: {toToken.balance}
+                                    <span className="text-sm text-base-muted font-medium">
+                                        Balance: {Number.parseFloat(fromToken.balance).toFixed(4)}
                                     </span>
                                 )}
                             </div>
@@ -378,7 +378,7 @@ const SwapCard = () => {
                                     value={toAmount}
                                     onChange={handleToAmountChange}
                                     placeholder="0.0"
-                                    className="w-full bg-transparent text-2xl text-base-text dark:text-base-text outline-none"
+                                    className="w-full bg-transparent text-2xl font-bold text-base-text dark:text-base-text outline-none"
                                 />
                                 <TokenSelector
                                     selectedToken={toToken}
