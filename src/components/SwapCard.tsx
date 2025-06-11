@@ -236,17 +236,17 @@ const SwapCard = () => {
 
     return (
         <div className="w-full max-w-lg mx-auto">
-            <Card className="bg-base-card border-zinc-700/50 dark:border-zinc-700/50 shadow-xl">
+            <Card className="bg-transparent border-zinc-700/50 dark:border-zinc-700/50 shadow-2xl">
                 <CardContent className="p-4">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-medium text-base-text dark:text-base-text">
+                        <h2 className="text-xl font-medium text-emerald-900 dark:text-base-text">
                             Swap
                         </h2>
                         <div className="flex gap-2 items-center">
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-base-muted hover:text-base-text hover:bg-zinc-800/50"
+                                className="text-base-muted hover:text-base-text hover:bg-emerald-800/10"
                                 onClick={() =>
                                     dispatch({
                                         type: "SET_SHOW_SETTINGS",
@@ -259,13 +259,13 @@ const SwapCard = () => {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-base-muted hover:text-base-text hover:bg-zinc-800/50"
+                                className="text-base-muted hover:text-base-text hover:bg-emerald-800/10"
                             >
                                 <RefreshCw size={20} />
                             </Button>
                             <div className="rounded-full bg-emerald-900/20 py-1 px-3 flex items-center gap-1.5">
                                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow"></span>
-                                <span className="text-xs font-medium text-base-text">
+                                <span className="text-xs font-medium text-emerald-900 dark:text-base-text">
                                     {activeChain.name}
                                 </span>
                             </div>
@@ -292,7 +292,7 @@ const SwapCard = () => {
                     )}
 
                     <div className="space-y-4">
-                        <div className="bg-zinc-800/50 dark:bg-zinc-800/50 rounded-lg p-4">
+                        <div className="bg-emerald-800/10 dark:bg-emerald-900/10 rounded-lg p-4">
                             <div className="flex justify-between mb-2">
                                 <span className="text-sm font-medium text-base-muted">
                                     You pay
@@ -335,7 +335,7 @@ const SwapCard = () => {
                                     value={fromAmount}
                                     onChange={handleFromAmountChange}
                                     placeholder="0.0"
-                                    className="w-full bg-transparent text-2xl font-bold text-base-text dark:text-base-text outline-none"
+                                    className="w-full bg-transparent text-2xl font-bold text-emerald-900 dark:text-base-text outline-none"
                                 />
                                 <TokenSelector
                                     selectedToken={fromToken}
@@ -354,14 +354,14 @@ const SwapCard = () => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="rounded-full h-10 w-10 bg-base-card border-zinc-700 shadow-md"
+                                className="rounded-full h-10 w-10 bg-emerald-900/10 hover:bg-emerald-500/10 border-zinc-700 shadow-md"
                                 onClick={switchTokens}
                             >
                                 <ArrowDown size={18} />
                             </Button>
                         </div>
 
-                        <div className="bg-zinc-800/50 dark:bg-zinc-800/50 rounded-lg p-4">
+                        <div className="bg-emerald-900/10 dark:bg-emerald-900/10 rounded-lg p-4">
                             <div className="flex justify-between mb-2">
                                 <span className="text-sm font-medium text-base-muted">
                                     You receive
@@ -378,7 +378,7 @@ const SwapCard = () => {
                                     value={toAmount}
                                     onChange={handleToAmountChange}
                                     placeholder="0.0"
-                                    className="w-full bg-transparent text-2xl font-bold text-base-text dark:text-base-text outline-none"
+                                    className="w-full bg-transparent text-2xl font-bold text-emerald-900 dark:text-base-text outline-none"
                                 />
                                 <TokenSelector
                                     selectedToken={toToken}
@@ -394,12 +394,12 @@ const SwapCard = () => {
                         </div>
 
                         {fromToken && toToken && fromAmount && toAmount && (
-                            <div className="bg-zinc-800/30 dark:bg-zinc-800/30 rounded-lg p-3 text-sm">
+                            <div className="rounded-lg p-3 text-sm">
                                 <div className="flex justify-between">
                                     <span className="text-base-muted">
                                         Rate
                                     </span>
-                                    <span className="text-base-text dark:text-base-text">
+                                    <span className="text-emerald-900 dark:text-base-text">
                                         1 {fromToken.symbol} ={" "}
                                         {(
                                             Number(toAmount) /
@@ -412,7 +412,7 @@ const SwapCard = () => {
                                     <span className="text-base-muted">
                                         Slippage Tolerance
                                     </span>
-                                    <span className="text-base-text dark:text-base-text">
+                                    <span className="text-emerald-900 dark:text-base-text">
                                         {slippage}%
                                     </span>
                                 </div>

@@ -228,7 +228,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       {isConnected && (
         <div className="flex justify-between items-center mt-2 px-1">
           <div className="text-sm text-base-muted">
-            Connected: <span className="text-base-text">{formatAddress(walletAddress)}</span>
+            Connected: <span className="text-emerald-900 dark:text-base-text">{formatAddress(walletAddress)}</span>
           </div>
           <Button
             variant="link"
@@ -251,7 +251,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
           </DialogHeader>
 
           <div className="flex flex-col items-center py-6">
-            <div className="w-16 h-16 rounded-full bg-green-900/20 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-900/10 flex items-center justify-center mb-4">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 6L9 17L4 12" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -262,7 +262,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
             </p>
             <Button 
               variant="outline" 
-              className="text-base-muted border-zinc-700 hover:bg-zinc-800/50 hover:text-base-text"
+              className="text-base-muted bg-emerald-900/10 border-zinc-700 hover:bg-emerald-900/50 hover:text-base-text"
             >
               View on Explorer <ExternalLink size={14} className="ml-2" />
             </Button>
@@ -271,7 +271,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
           <DialogFooter>
             <Button 
               onClick={() => setDialogOpen(false)}
-              className="w-full bg-gradient-to-r from-emerald-400 to-emerald-500 hover:opacity-90"
+              className="w-full bg-emerald-400/40 hover:bg-emerald-400/40 text-base-text border-zinc-700 hover:border-zinc-600"
             >
               Close
             </Button>

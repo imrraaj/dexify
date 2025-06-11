@@ -165,30 +165,30 @@ const SendToken = () => {
 
     return (
         <div className="w-full max-w-lg mx-auto">
-            <Card className="bg-base-card border-zinc-700/50 shadow-xl">
+            <Card className="bg-transparent border-zinc-700/50 shadow-xl">
                 <CardContent className="p-4">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-medium text-base-text">
+                        <h2 className="text-xl font-medium text-emerald-900 dark:text-base-text">
                             Send
                         </h2>
                         <div className="rounded-full bg-emerald-900/20 py-1 px-3 flex items-center gap-1.5">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow"></span>
-                            <span className="text-xs font-medium text-base-text">
+                            <span className="text-xs font-medium text-emerald-900 dark:text-base-text">
                                 {activeChain.name}
                             </span>
                         </div>
                     </div>
 
                     <div className="space-y-4">
-                        <div className="bg-zinc-800/50 rounded-lg p-4">
+                        <div className="bg-emerald-900/10 rounded-lg p-4">
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm text-base-muted">
+                                <span className="text-sm font-medium text-base-muted">
                                     Token
                                 </span>
                                 {selectedToken &&
                                     selectedToken.balance !== undefined && (
                                         <span
-                                            className="text-sm text-base-muted cursor-pointer"
+                                            className="text-sm text-base-muted cursor-pointer font-medium"
                                             onClick={() => dispatch({ type: "SET_AMOUNT",payload: selectedToken.balance })}
                                         >
                                             Balance: {selectedToken.balance}
@@ -196,12 +196,12 @@ const SendToken = () => {
                                     )}
                             </div>
                             <div className="flex items-center">
-                                <Input
+                                <input
                                     type="text"
                                     value={amount}
                                     onChange={(e) => dispatch({ type: "SET_AMOUNT", payload: e.target.value })}
                                     placeholder="0.0"
-                                    className="border-none bg-transparent text-2xl text-base-text outline-none w-full"
+                                    className="border-none bg-transparent text-2xl font-bold text-emerald-900 dark:text-base-text outline-none w-full"
                                 />
                                 <TokenSelector
                                     selectedToken={selectedToken}
@@ -210,18 +210,18 @@ const SendToken = () => {
                             </div>
                         </div>
 
-                        <div className="bg-zinc-800/50 rounded-lg p-4">
+                        <div className="bg-emerald-900/10 rounded-lg p-4">
                             <div className="mb-2">
-                                <span className="text-sm text-base-muted">
+                                <span className="text-sm font-medium text-base-muted">
                                     Recipient Address
                                 </span>
                             </div>
-                            <Input
+                            <input
                                 type="text"
                                 value={recipient}
                                 onChange={(e) => dispatch({ type: "SET_RECIPIENT", payload: e.target.value })}
                                 placeholder="0x..."
-                                className="border-none bg-transparent text-base text-base-text"
+                                className="border-none bg-transparent text-base font-bold text-emerald-900 dark:text-base-text outline-none w-full"
                             />
                         </div>
 

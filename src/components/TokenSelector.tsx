@@ -139,12 +139,12 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
             <Button
                 variant="ghost"
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-3 hover:bg-zinc-800/50 rounded-lg"
+                className="flex items-center gap-2 px-3 hover:bg-emerald-800/10 rounded-lg"
             >
                 {selectedToken ? (
                     <>
                         <TokenImage symbol={selectedToken.symbol} />
-                        <span className="text-base-text font-medium">
+                        <span className="text-emerald-900 dark:text-base-text font-medium">
                             {selectedToken.symbol}
                         </span>
                     </>
@@ -155,7 +155,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
             </Button>
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent className="sm:max-w-md bg-base-card border-zinc-700/50">
+                <DialogContent className="sm:max-w-md bg-base-card border-emerald-900/10 w-11/12">
                     <DialogHeader>
                         <DialogTitle className="text-base-text">
                             Select a token
@@ -167,7 +167,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
                                 placeholder="Search by name, symbol, or paste address"
                                 value={searchQuery}
                                 onChange={handleSearchChange}
-                                className="bg-zinc-800/50 border-zinc-700/50 text-base-text"
+                                className="bg-stone-700/10 border-zinc-700 text-base-text"
                                 autoFocus
                             />
                         </div>
@@ -178,7 +178,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
                                     <button
                                         key={token.address}
                                         onClick={() => handleSelectToken(token)}
-                                        className="w-full flex items-center justify-between p-3 hover:bg-zinc-800/50 rounded-lg transition-colors"
+                                        className="w-full flex items-center justify-between p-3 hover:bg-emerald-900/20 rounded-lg transition-colors"
                                     >
                                         <div className="flex items-center gap-3">
                                             <TokenImage symbol={token.symbol} />

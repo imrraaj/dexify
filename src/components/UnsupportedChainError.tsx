@@ -27,7 +27,7 @@ export const UnsupportedChainError = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-emerald-50 dark:from-base-background dark:to-zinc-900 text-zinc-900 dark:text-base-text transition-colors duration-300">
+        <div className="min-h-screen px-4 flex items-center justify-center">
             <Card className="w-full max-w-md shadow-lg bg-transparent">
                 <CardHeader>
                     <CardTitle className="text-2xl mx-auto font-black">Unsupported Network</CardTitle>

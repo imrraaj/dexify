@@ -41,14 +41,14 @@ const SwapSettings: React.FC<SwapSettingsProps> = ({
   };
 
   return (
-    <div className="bg-zinc-800/50 rounded-lg p-4 mb-4 space-y-4">
+    <div className="bg-emerald-900/10 rounded-lg p-4 mb-4 space-y-4">
       <div className="flex justify-between items-center mb-2">
-        <h3 className="text-base font-medium text-base-text">Transaction Settings</h3>
+        <h3 className="text-base font-medium text-emerald-900 dark:text-base-text">Transaction Settings</h3>
         <Button 
           variant="ghost" 
           size="icon" 
           onClick={onClose}
-          className="h-6 w-6 text-base-muted hover:text-base-text"
+          className="h-6 w-6 text-base-muted hover:bg-emerald-800/10"
         >
           <X size={16} />
         </Button>
@@ -57,8 +57,8 @@ const SwapSettings: React.FC<SwapSettingsProps> = ({
       <div className="space-y-3">
         <div>
           <div className="flex justify-between mb-2">
-            <span className="text-sm text-base-text">Slippage Tolerance</span>
-            <span className="text-sm font-black text-emerald-400">{slippage}%</span>
+            <span className="text-sm text-emerald-800 dark:text-base-text">Slippage Tolerance</span>
+            <span className="text-sm font-black text-emerald-900 dark:text-emerald-400">{slippage}%</span>
           </div>
           
           <div className="flex gap-2 mb-2">
@@ -66,12 +66,11 @@ const SwapSettings: React.FC<SwapSettingsProps> = ({
               <Button
                 key={value}
                 variant={slippage === value ? "default" : "outline"}
-                size="sm"
                 onClick={() => setSlippage(value)}
                 className={`flex-1 ${
                   slippage === value
-                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                    : 'bg-transparent border border-zinc-700 text-base-muted hover:bg-zinc-800/50 hover:text-base-text'
+                    ? 'bg-emerald-800 hover:bg-emerald-800 dark:bg-emerald-500 dark:text-white'
+                    : 'bg-transparent border border-emerald-700 text-base-muted  hover:bg-emerald-800/50 dark:hover:bg-emerald-800/50 hover:text-base-text'
                 }`}
               >
                 {value}%
@@ -82,7 +81,7 @@ const SwapSettings: React.FC<SwapSettingsProps> = ({
                 type="number"
                 value={slippage}
                 onChange={handleCustomSlippageChange}
-                className="w-full bg-transparent border border-zinc-700 text-base-text pr-6"
+                className="w-full border-[1px] bg-emerald-100/10 border-zinc-700 text-emerald-900 dark:text-base-text pr-6"
                 step="0.1"
                 min="0"
                 max="50"
@@ -90,21 +89,11 @@ const SwapSettings: React.FC<SwapSettingsProps> = ({
               <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-base-muted">%</span>
             </div>
           </div>
-          
-          {/* <Slider
-            defaultValue={[slippage]}
-            value={[slippage]}
-            max={5}
-            min={0.1}
-            step={0.1}
-            onValueChange={handleSlippageChange}
-            className="mt-4"
-          /> */}
         </div>
 
         <div>
           <div className="flex justify-between mb-2">
-            <span className="text-sm text-base-text">Transaction Deadline</span>
+            <span className="text-sm text-emerald-900 dark:text-base-text">Transaction Deadline</span>
           </div>
           <div className="flex items-center">
             <div className="relative flex-1">
@@ -112,7 +101,7 @@ const SwapSettings: React.FC<SwapSettingsProps> = ({
                 type="number"
                 value={deadline}
                 onChange={handleDeadlineChange}
-                className="w-full bg-transparent border border-zinc-700 text-base-text pr-12"
+                className="w-full bg-emerald-100/10 border border-zinc-700 text-emerald-900 dark:text-base-text pr-12"
                 min="1"
               />
               <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-base-muted">minutes</span>
