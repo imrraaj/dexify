@@ -21,6 +21,7 @@ interface SwapCardState {
     toToken: Token | null;
     tokens: Token[];
     isDisabled: boolean;
+    tx: string | null;
 }
 
 type SwapCardAction =
@@ -34,7 +35,8 @@ type SwapCardAction =
     | { type: "SET_TO_TOKEN"; payload: Token | null }
     | { type: "SET_TOKENS"; payload: Token[] }
     | { type: "RESET_AMOUNTS" }
-    | { type: "SET_IS_DISABLED"; payload: boolean }; // Added action to set disabled state
+    | { type: "SET_IS_DISABLED"; payload: boolean }
+    | { type: "SET_TX"; payload: string }
 
 const initialSwapCardState = {
     fromAmount: "",
@@ -47,6 +49,7 @@ const initialSwapCardState = {
     toToken: null,
     tokens: [],
     isDisabled: true, // Initialize as disabled
+    tx: null,
 };
 
 const swapCardReducer = (
@@ -84,6 +87,8 @@ const swapCardReducer = (
             return { ...state, tokens: action.payload };
         case "RESET_AMOUNTS":
             return { ...state, fromAmount: "", toAmount: "" };
+        case "SET_TX":
+            return { ...state, tx: action.payload };
         case "SET_IS_DISABLED":
             return { ...state, isDisabled: action.payload };
         default:
@@ -106,6 +111,7 @@ const SwapCard = () => {
         fromToken,
         toToken,
         isDisabled,
+        tx,
     } = state;
 
     useEffect(() => {
@@ -196,8 +202,8 @@ const SwapCard = () => {
 
         try {
             dispatch({ type: "SET_IS_SWAPPING", payload: true });
-            // await approveToken(activeChain, fromToken, fromAmount);
-            await executeSwap(
+            await approveToken(activeChain, fromToken, fromAmount);
+            const tx = await executeSwap(
                 activeChain,
                 fromToken,
                 toToken,
@@ -206,12 +212,14 @@ const SwapCard = () => {
                 slippage,
                 fromAmount
             );
-
-            toast({
-                title: "Swap Successful",
-                description: `Swapped ${fromAmount} ${fromToken.symbol} for ${toAmount} ${toToken.symbol}`,
-            });
-            dispatch({ type: "RESET_AMOUNTS" });
+            if(tx) {
+                dispatch({ type: "SET_TX", payload: tx });
+                toast({
+                    title: "Swap Successful",
+                    description: `Swapped ${fromAmount} ${fromToken.symbol} for ${toAmount} ${toToken.symbol}`,
+                });
+                dispatch({ type: "RESET_AMOUNTS" });
+            }
         } catch (error) {
             toast({
                 title: "Swap Failed",
@@ -423,6 +431,7 @@ const SwapCard = () => {
                             isSwapping={isSwapping}
                             buttonText={getButtonText()}
                             disabled={isDisabled}
+                            tx={tx}
                         />
                     </div>
                 </CardContent>

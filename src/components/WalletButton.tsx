@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, act } from 'react';
 import { ethers } from 'ethers';
 import { Button } from '@/components/ui/button';
 import { Loader2, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Dialog, 
+import {
+  Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle, 
+  DialogTitle,
   DialogDescription,
   DialogFooter
 } from '@/components/ui/dialog';
@@ -19,20 +19,22 @@ interface WalletButtonProps {
   isSwapping: boolean;
   buttonText: string;
   disabled?: boolean;
+  tx: string;
 }
 
-const WalletButton: React.FC<WalletButtonProps> = ({ 
-  onSwap, 
-  isSwapping, 
+const WalletButton: React.FC<WalletButtonProps> = ({
+  onSwap,
+  isSwapping,
   buttonText,
   disabled = false,
+  tx
 }) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
-  const { setActiveChain } = useSettings();
+  const { setActiveChain, activeChain } = useSettings();
 
   const checkWalletConnection = async () => {
     try {
@@ -45,7 +47,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
 
       if (accounts.length > 0) {
         const network = await provider.getNetwork();
-        const chainId = Number(network.chainId); // Convert BigInt to number
+        const chainId = Number(network.chainId);
         const selectedChain = Object.values(chains).find(
           (chain: Chain) => chain.chainId === chainId
         );
@@ -84,7 +86,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       const provider = new ethers.BrowserProvider(window.ethereum);
       const accounts = await provider.send("eth_requestAccounts", []);
       const network = await provider.getNetwork();
-      const chainId = Number(network.chainId); // Convert BigInt to number
+      const chainId = Number(network.chainId);
       const selectedChain = Object.values(chains).find(
         (chain: Chain) => chain.chainId === chainId
       );
@@ -104,7 +106,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       setWalletAddress(address);
       setIsConnected(true);
       setActiveChain(selectedChain);
-      
+
       toast({
         title: "Wallet Connected",
         description: `Connected to ${formatAddress(address)} on ${selectedChain.name}`,
@@ -132,13 +134,13 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       description: "Your wallet has been disconnected",
     });
   };
-  
+
   const handleSwap = async () => {
     if (!isConnected) {
       await connectWallet();
       return;
     }
-    
+
     try {
       await onSwap();
       setDialogOpen(true);
@@ -148,8 +150,8 @@ const WalletButton: React.FC<WalletButtonProps> = ({
   };
 
   const formatAddress = (address: string) => {
-    return address.length > 10 
-      ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` 
+    return address.length > 10
+      ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}`
       : address;
   };
 
@@ -213,16 +215,15 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       <Button
         disabled={walletAddress && (isConnecting || isSwapping || disabled)}
         onClick={handleSwap}
-        className={`w-full text-white py-3 rounded-lg transition-all font-bold ${
-          isConnected 
-            ? 'bg-gradient-to-r from-emerald-400 to-emerald-500 hover:opacity-90' 
-            : 'bg-emerald-600 hover:bg-emerald-500'
-        }`}
+        className={`w-full text-white py-3 rounded-lg transition-all font-bold ${isConnected
+          ? 'bg-gradient-to-r from-emerald-400 to-emerald-500 hover:opacity-90'
+          : 'bg-emerald-600 hover:bg-emerald-500'
+          }`}
       >
         {isConnecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {isSwapping && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        {isConnecting ? "Connecting..." : isSwapping ? "Swapping..." : 
-         isConnected ? buttonText : "Connect Wallet"}
+        {isConnecting ? "Connecting..." : isSwapping ? "Swapping..." :
+          isConnected ? buttonText : "Connect Wallet"}
       </Button>
 
       {isConnected && (
@@ -260,16 +261,21 @@ const WalletButton: React.FC<WalletButtonProps> = ({
             <p className="text-center text-base-muted mb-4">
               Your swap has been processed successfully
             </p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="link"
               className="text-base-muted bg-emerald-900/10 border-zinc-700 hover:bg-emerald-900/50 hover:text-base-text"
             >
-              View on Explorer <ExternalLink size={14} className="ml-2" />
+              <a
+                href={`${activeChain?.blockExplorer}/tx/${tx}`}
+                target="_blank" rel="noopener noreferrer">
+                View on Explorer
+              </a>
+              <ExternalLink size={14} />
             </Button>
           </div>
 
           <DialogFooter>
-            <Button 
+            <Button
               onClick={() => setDialogOpen(false)}
               className="w-full bg-emerald-400/40 hover:bg-emerald-400/40 text-base-text border-zinc-700 hover:border-zinc-600"
             >

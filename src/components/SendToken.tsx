@@ -7,6 +7,7 @@ import { useSettings } from "@/hooks/use-setting";
 import WalletButton from "./WalletButton";
 import { Token } from "@/config/chains";
 import { ethers } from "ethers";
+import { approveToken, sendToken } from "@/lib/utils";
 
 // Define the state type
 interface SendTokenState {
@@ -15,6 +16,7 @@ interface SendTokenState {
     recipient: string;
     isSending: boolean;
     isDisabled: boolean;
+    tx: string | null;
 }
 
 // Define action types
@@ -23,7 +25,8 @@ type SendTokenAction =
     | { type: "SET_AMOUNT"; payload: string }
     | { type: "SET_RECIPIENT"; payload: string }
     | { type: "SET_IS_SENDING"; payload: boolean }
-    | { type: "SET_FORM_VALIDITY"; payload: boolean } // Consolidated validity action
+    | { type: "SET_FORM_VALIDITY"; payload: boolean }
+    | { type: "SET_TX", payload: string }
     | { type: "RESET_FORM" };
 
 // Define the reducer function
@@ -43,6 +46,8 @@ const sendTokenReducer = (
             return { ...state, isSending: action.payload };
         case "SET_FORM_VALIDITY":
             return { ...state, isDisabled: !action.payload };
+        case "SET_TX":
+            return { ...state, tx: action.payload };
         case "RESET_FORM":
             return { ...state, amount: "", recipient: "" };
         default:
@@ -61,10 +66,11 @@ const SendToken = () => {
         recipient: "",
         isSending: false,
         isDisabled: true,
+        tx: "",
     });
 
     // Destructure state for easier access
-    const { selectedToken, amount, recipient, isSending, isDisabled } = state;
+    const { selectedToken, amount, recipient, isSending, isDisabled, tx } = state;
 
     // Set initial selected token
     useEffect(() => {
@@ -122,8 +128,8 @@ const SendToken = () => {
 
         try {
             dispatch({ type: "SET_IS_SENDING", payload: true });
-            await new Promise((r) => setTimeout(r, 2000));
-
+            const tx = await sendToken(selectedToken, amount, recipient)
+            dispatch({ type: "SET_TX", payload: tx });
             toast({
                 title: "Transaction Sent",
                 description: `Sent ${amount} ${
@@ -230,6 +236,7 @@ const SendToken = () => {
                             isSwapping={isSending}
                             buttonText={getButtonText()}
                             disabled={isDisabled}
+                            tx={tx}
                         />
                     </div>
                 </CardContent>

@@ -161,7 +161,8 @@ export async function approveToken(activeChain: Chain, token: Token, amount: str
 }
 
 
-export async function executeSwap(activeChain: Chain, fromToken: Token, toToken: Token, fee: number, deadline: number, slippage: number, amountIn: string) {
+export async function executeSwap(activeChain: Chain, fromToken: Token, toToken: Token, fee: number, deadline: number, slippage: number, amountIn: string): Promise<string>
+ {
     try {
         const provider = getProvider();
         const swapRouter = new ethers.Contract(
@@ -182,13 +183,50 @@ export async function executeSwap(activeChain: Chain, fromToken: Token, toToken:
                 amountIn.toString(),
                 fromToken.decimals,
             ),
-            amountOutMinimum: 0,
+            amountOutMinimum,
             sqrtPriceLimitX96: 0,
         });
 
         const receipt = await signer.sendTransaction(tx);
         console.log(`Transaction sent! Hash: ${receipt.hash}`);
+        return receipt.hash;
     } catch (error) {
         console.error("Error executing swap:", error);
     }
+    return "";
+}
+
+export async function sendToken(token: Token, amountIn: string, recipient: string): Promise<string> {
+    try {
+        const provider = getProvider();
+        const contract = new ethers.Contract(
+            token.address,
+            ERC20,
+            provider
+        );
+        const wallet = await getWallet();
+        const signer = await provider.getSigner(wallet);
+        const amountInWei = ethers.parseUnits(amountIn, token.decimals);
+        const tx = await contract.transfer.populateTransaction(
+            recipient,
+            amountInWei
+        );
+        const transactionResponse = await signer.sendTransaction({
+            to: token.address,
+            data: tx.data,
+            gasLimit: 3000,
+        });
+        console.log(`Transaction Hash: ${transactionResponse.hash}`);
+        console.log(`Sending ${amountIn} ${token.symbol} to ${recipient}...`);
+        const receipt = await transactionResponse.wait();
+        if (receipt.status === 1) {
+            console.log(`Transfer successful!`);
+            return transactionResponse.hash;
+        } else {
+            console.error(`Transfer failed!`);
+        }
+    } catch (error) {
+        console.error("Token transfer failed:", error);
+    }
+    return "";
 }
