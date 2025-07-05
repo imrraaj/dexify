@@ -1,10 +1,30 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { ethers } from "ethers"
+import { Contract, ethers, parseEther, parseUnits } from "ethers"
 import QUOTER_ABI from "@/data/quoter.abi.json"
 import ERC20 from "@/data/ERC20.abi.json"
 import SWAPROUTER_ABI from "@/data/swaprouter.abi.json"
 import { Chain, Token } from "@/config/chains";
+import ZELIMITER_ABI from "@/data/zelimiter.json";
+
+interface Order {
+    odt: number;
+    tokenIn: string;
+    tokenOut: string;
+    amountIn: string;
+    priceUSD: string;
+    user: string;
+    executed: boolean;
+    orderId?: number;
+}
+
+interface TokenInfo {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    balance: string;
+}
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -160,9 +180,7 @@ export async function approveToken(activeChain: Chain, token: Token, amount: str
     }
 }
 
-
-export async function executeSwap(activeChain: Chain, fromToken: Token, toToken: Token, fee: number, deadline: number, slippage: number, amountIn: string): Promise<string>
- {
+export async function executeSwap(activeChain: Chain, fromToken: Token, toToken: Token, fee: number, deadline: number, slippage: number, amountIn: string): Promise<string> {
     try {
         const provider = getProvider();
         const swapRouter = new ethers.Contract(
@@ -229,4 +247,120 @@ export async function sendToken(token: Token, amountIn: string, recipient: strin
         console.error("Token transfer failed:", error);
     }
     return "";
+}
+
+
+export async function getTokenInfo(tokenAddress: string, functionName ?: string): Promise<string | TokenInfo> {
+    if(functionName) {
+        try {
+            const provider = getProvider();
+            const contract = new ethers.Contract(tokenAddress, ERC20, provider);
+            const tokenInfo = await contract[functionName]();
+            return tokenInfo.toString();
+        } catch (error) {
+            console.error(`Error fetching ${functionName} for ${tokenAddress}:`, error);
+            return "Unknown";
+        }
+    }
+
+    try {
+        const provider = getProvider();
+        const contract = new ethers.Contract(tokenAddress, ERC20, provider);
+        const [name, symbol, decimals] = await Promise.all([
+            contract.name(),
+            contract.symbol(),
+            contract.decimals()
+        ]);
+        return {
+            address: tokenAddress,
+            name: name || "Unknown",
+            symbol: symbol || "Unknown",
+            decimals: decimals || 18,
+            balance: "0"
+        }
+    } catch (error) {
+        console.error(`Error fetching token symbol for ${tokenAddress}:`, error);
+        return "Unknown";
+    }
+}
+
+
+
+
+
+export async function createBuyOrder(
+    ca: string,
+    tokenAddress: string,
+    priceUSD: string,
+    ethAmount: string
+): Promise<string> {
+    const priceInWei = parseUnits(priceUSD, 6);
+    const ethAmountInWei = parseEther(ethAmount);
+    const provider = getProvider();
+    const signer = await provider.getSigner();
+    const zeLimiter = new ethers.Contract(ca, ZELIMITER_ABI, signer);
+    const tx = await zeLimiter.buyOrder(tokenAddress, priceInWei, { value: ethAmountInWei });
+    const receipt = await tx.wait();
+
+    const orderCreatedEvent = receipt.events?.find((event: any) => event.event === 'OrderCreated');
+    const orderId = orderCreatedEvent?.args?.orderId?.toString();
+    return orderId || 'Unknown';
+}
+
+export async function createSellOrder(
+    ca: string,
+    tokenAddress: string,
+    priceUSD: string,
+    tokenAmount: string
+): Promise<string> {
+    const provider = getProvider();
+    const signer = await provider.getSigner();
+    const zeLimiter = new ethers.Contract(ca, ZELIMITER_ABI, signer);
+    const tokenContract = new ethers.Contract(tokenAddress, ERC20, signer);
+    const tokenInfo = await tokenContract.decimals!();
+    const priceInWei = parseUnits(priceUSD, 6);
+    const amountInWei = parseUnits(tokenAmount, tokenInfo[0]);
+
+    const userAddress = await getWallet();
+    const allowance = await tokenContract.allowance(userAddress, ca);
+    if (allowance < amountInWei) {
+        const approveTx = await tokenContract.approve(ca, amountInWei);
+        await approveTx.wait();
+    }
+
+    const tx = await zeLimiter.sellOrder(tokenAddress, priceInWei, amountInWei);
+    const receipt = await tx.wait();
+
+    const orderCreatedEvent = receipt.events?.find((event: any) => event.event === 'OrderCreated');
+    const orderId = orderCreatedEvent?.args?.orderId?.toString();
+    return orderId || 'Unknown';
+}
+
+export async function cancelOrder(ca: string, orderId: number): Promise<void> {
+    const provider = getProvider();
+    const signer = await provider.getSigner();
+    const zeLimiter = new Contract(ca, ZELIMITER_ABI, signer);
+    const tx = await zeLimiter.cancelOrder(orderId);
+    await tx.wait();
+}
+export async function getUserOrders(ca: string): Promise<Order[]> {
+    const provider = getProvider();
+    const signer = await provider.getSigner();
+    const zeLimiter = new Contract(ca, ZELIMITER_ABI, signer);
+    const orders = await zeLimiter.viewMyOrders();
+    const o =  orders.map(async (order: any, index: number) => {
+        const tokenInInfo = await getTokenInfo(order.tokenIn, "symbol");
+        return {
+            odt: Number(order.odt),
+            tokenIn: order.tokenIn,
+            tokenOut: order.tokenOut,
+            amountIn: order.amountIn.toString(),
+            priceUSD: order.priceUSD.toString(),
+            user: order.user,
+            executed: order.executed,
+            orderId: index,
+            tokenInInfo,
+        };
+    });
+    return Promise.all(o);
 }

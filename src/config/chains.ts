@@ -20,6 +20,7 @@ export interface Chain {
     rpcUrl: string;
     blockExplorer: string;
     factoryAddress?: string;
+    zeLimiterAddress?: string;
     quoterAddress: string;
     swapRouterAddress: string;
     tokens: {
@@ -39,6 +40,7 @@ export const chains = {
         factoryAddress: '0x33128a8fC17869897dcE68Ed026d694621f6FDfD',
         quoterAddress: '0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a',
         swapRouterAddress: '0x2626664c2603336E57B271c5C0b26F421741e481',
+        zeLimiterAddress: "0xA2b0956C54842CB418e77b3C0E0740adDAaaa85C",
         tokens: {
             nativeCurrencyAddress: {
                 symbol: "ETH",

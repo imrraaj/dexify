@@ -3,6 +3,7 @@ import SwapCard from "@/components/SwapCard";
 import SendToken from "@/components/SendToken";
 import Header from "@/components/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LimitOrderCard from "@/components/Limiter";
 
 const Index = () => {
     const [activeTab, setActiveTab] = useState("swap");
@@ -21,7 +22,7 @@ const Index = () => {
                         onValueChange={setActiveTab}
                         className="w-full max-w-lg"
                     >
-                        <TabsList className="grid grid-cols-2 mb-4 bg-emerald-100/30 dark:bg-emerald-800/30">
+                        <TabsList className="grid grid-cols-3 mb-4 bg-emerald-100/30 dark:bg-emerald-800/30">
                             <TabsTrigger
                                 value="swap"
                                 className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white dark:data-[state=active]:bg-emerald-600"
@@ -34,12 +35,21 @@ const Index = () => {
                             >
                                 Send
                             </TabsTrigger>
+                            <TabsTrigger
+                                value="limit"
+                                className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white dark:data-[state=active]:bg-emerald-600"
+                            >
+                                Limit Orders
+                            </TabsTrigger>
                         </TabsList>
                         <TabsContent value="swap">
                             <SwapCard />
                         </TabsContent>
                         <TabsContent value="send">
                             <SendToken />
+                        </TabsContent>
+                        <TabsContent value="limit">
+                            <LimitOrderCard />
                         </TabsContent>
                     </Tabs>
                 </main>

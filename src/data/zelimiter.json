@@ -1,0 +1,11 @@
+[
+    "function buyOrder(address tokenTarget, uint256 priceUSD) external payable returns (int256)",
+    "function sellOrder(address tokenTarget, uint256 priceUSD, uint256 amount) external returns (int256)",
+    "function cancelOrder(uint256 orderId) external payable returns (uint256)",
+    "function viewMyOrders() external view returns (tuple(uint8 odt, address tokenIn, address tokenOut, uint256 amountIn, uint256 priceUSD, address user, bool executed)[])",
+    "function getOrderCount() external view returns (uint256)",
+    "function orders(uint256) external view returns (uint8 odt, address tokenIn, address tokenOut, uint256 amountIn, uint256 priceUSD, address user, bool executed)",
+    "event OrderCreated(uint256 indexed orderId, address indexed user, uint8 odt, address tokenIn, address tokenOut, uint256 amountIn, uint256 priceUSD)",
+    "event OrderCancelled(uint256 indexed orderId, address indexed user, address token, uint256 amount)",
+    "event OrderExecuted(uint256 indexed orderId, address indexed user, uint8 odt, uint256 amountIn, uint256 amountOut)"
+  ]
