@@ -1,0 +1,17 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#080B10"/>
+  <rect x="64" y="64" width="1072" height="502" rx="36" fill="#0D1219" stroke="rgba(255,255,255,0.12)"/>
+  <circle cx="996" cy="118" r="220" fill="#4ADE80" fill-opacity="0.12"/>
+  <circle cx="170" cy="526" r="180" fill="#38BDF8" fill-opacity="0.08"/>
+  <rect x="104" y="104" width="76" height="76" rx="18" fill="#F8FAFC"/>
+  <path d="M122 142H162M142 122V162M128 128L156 156M156 128L128 156" stroke="#080B10" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="170" cy="104" r="12" fill="#4ADE80" stroke="#080B10" stroke-width="6"/>
+  <text x="104" y="256" fill="#F8FAFC" font-family="Instrument Sans, Arial, sans-serif" font-size="74" font-weight="800" letter-spacing="-4">DEXify</text>
+  <text x="104" y="324" fill="#A7F3D0" font-family="IBM Plex Mono, monospace" font-size="24" font-weight="700" letter-spacing="5">ZERO-FEE SWAP TERMINAL</text>
+  <text x="104" y="408" fill="#CBD5E1" font-family="Instrument Sans, Arial, sans-serif" font-size="34" font-weight="600">Swap, send, and manage TP/SL keeper orders</text>
+  <text x="104" y="458" fill="#94A3B8" font-family="Instrument Sans, Arial, sans-serif" font-size="28">Powered by Uniswap routes across Base, Arbitrum, and BNB Chain.</text>
+  <rect x="820" y="210" width="250" height="220" rx="28" fill="rgba(255,255,255,0.045)" stroke="rgba(255,255,255,0.12)"/>
+  <text x="852" y="270" fill="#94A3B8" font-family="Instrument Sans, Arial, sans-serif" font-size="22" font-weight="700">APP FEE</text>
+  <text x="852" y="356" fill="#F8FAFC" font-family="Instrument Sans, Arial, sans-serif" font-size="92" font-weight="800">0%</text>
+  <text x="852" y="398" fill="#A7F3D0" font-family="Instrument Sans, Arial, sans-serif" font-size="24" font-weight="700">only network costs</text>
+</svg>

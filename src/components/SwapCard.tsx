@@ -7,7 +7,7 @@ import WalletButton from "./WalletButton";
 import SwapSettings from "./SwapSettings";
 import { useToast } from "@/hooks/use-toast";
 import { useSettings } from "@/hooks/use-setting";
-import { Token } from "@/config/chains";
+import { getChainTokens, Token } from "@/config/chains";
 import { approveToken, executeSwap, updateQuote } from "@/lib/utils";
 
 interface SwapCardState {
@@ -62,14 +62,14 @@ const swapCardReducer = (
                 action.payload !== "" &&
                 !/^[0-9]*[.,]?[0-9]*$/.test(action.payload)
             )
-                return;
+                return state;
             return { ...state, fromAmount: action.payload };
         case "SET_TO_AMOUNT":
             if (
                 action.payload !== "" &&
                 !/^[0-9]*[.,]?[0-9]*$/.test(action.payload)
             )
-                return;
+                return state;
             return { ...state, toAmount: action.payload };
         case "SET_IS_SWAPPING":
             return { ...state, isSwapping: action.payload };
@@ -126,7 +126,7 @@ const SwapCard = () => {
             });
             dispatch({
                 type: "SET_TOKENS",
-                payload: Object.values(activeChain.tokens),
+                payload: getChainTokens(activeChain),
             });
             dispatch({ type: "RESET_AMOUNTS" });
         }
@@ -210,7 +210,8 @@ const SwapCard = () => {
                 3000,
                 deadline,
                 slippage,
-                fromAmount
+                fromAmount,
+                toAmount
             );
             if(tx) {
                 dispatch({ type: "SET_TX", payload: tx });
@@ -227,6 +228,7 @@ const SwapCard = () => {
                 variant: "destructive",
             });
             console.error("Swap error:", error);
+            throw error;
         } finally {
             dispatch({ type: "SET_IS_SWAPPING", payload: false });
         }
@@ -239,22 +241,25 @@ const SwapCard = () => {
     };
 
     if (activeChain === null) {
-        return <p>No Available chain</p>;
+        return <p className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-center font-semibold text-white/60">No available chain</p>;
     }
 
     return (
         <div className="w-full max-w-lg mx-auto">
-            <Card className="bg-transparent border-zinc-700/50 dark:border-zinc-700/50 shadow-2xl">
-                <CardContent className="p-4">
+            <Card className="overflow-hidden rounded-2xl border-white/10 bg-[#0b1017]/94 text-white shadow-xl shadow-black/30 backdrop-blur-xl">
+                <CardContent className="p-3 sm:p-4">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-medium text-emerald-900 dark:text-base-text">
-                            Swap
-                        </h2>
-                        <div className="flex gap-2 items-center">
+                        <div>
+                            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-300/70">Instant route</p>
+                            <h2 className="font-display text-2xl font-extrabold tracking-[-0.05em] text-white">
+                                Swap
+                            </h2>
+                        </div>
+                        <div className="flex items-center gap-1.5 sm:gap-2">
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-base-muted hover:text-base-text hover:bg-emerald-800/10"
+                                className="h-8 w-8 rounded-lg text-white/50 hover:bg-white/10 hover:text-white sm:h-9 sm:w-9"
                                 onClick={() =>
                                     dispatch({
                                         type: "SET_SHOW_SETTINGS",
@@ -267,13 +272,14 @@ const SwapCard = () => {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-base-muted hover:text-base-text hover:bg-emerald-800/10"
+                                className="h-8 w-8 rounded-lg text-white/50 hover:bg-white/10 hover:text-white sm:h-9 sm:w-9"
+                                onClick={() => fromAmount && handleFromAmountChange({ target: { value: fromAmount } } as React.ChangeEvent<HTMLInputElement>)}
                             >
                                 <RefreshCw size={20} />
                             </Button>
-                            <div className="rounded-full bg-emerald-900/20 py-1 px-3 flex items-center gap-1.5">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow"></span>
-                                <span className="text-xs font-medium text-emerald-900 dark:text-base-text">
+                            <div className="hidden rounded-md border border-emerald-400/15 bg-emerald-400/8 px-2.5 py-1.5 sm:flex items-center gap-1.5">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse-slow"></span>
+                                <span className="text-xs font-bold text-emerald-200">
                                     {activeChain.name}
                                 </span>
                             </div>
@@ -299,15 +305,15 @@ const SwapCard = () => {
                         />
                     )}
 
-                    <div className="space-y-4">
-                        <div className="bg-emerald-800/10 dark:bg-emerald-900/10 rounded-lg p-4">
+                    <div className="space-y-2.5 sm:space-y-3">
+                        <div className="rounded-xl border border-white/10 bg-white/[0.045] p-3 transition focus-within:border-emerald-400/35 focus-within:bg-white/[0.065]">
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-base-muted">
+                                <span className="text-sm font-bold text-white/45">
                                     You pay
                                 </span>
                                 {fromToken && fromToken.balance && (
                                     <span
-                                        className="text-sm text-base-muted cursor-pointer font-medium"
+                                        className="cursor-pointer text-xs font-semibold text-emerald-300/75 hover:text-emerald-200 sm:text-sm"
                                         onClick={async () => {
                                             dispatch({
                                                 type: "SET_FROM_AMOUNT",
@@ -343,7 +349,7 @@ const SwapCard = () => {
                                     value={fromAmount}
                                     onChange={handleFromAmountChange}
                                     placeholder="0.0"
-                                    className="w-full bg-transparent text-2xl font-bold text-emerald-900 dark:text-base-text outline-none"
+                                    className="w-full min-w-0 bg-transparent font-display text-3xl font-bold tracking-[-0.05em] text-white outline-none placeholder:text-white/16 sm:text-4xl"
                                 />
                                 <TokenSelector
                                     selectedToken={fromToken}
@@ -362,20 +368,20 @@ const SwapCard = () => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="rounded-full h-10 w-10 bg-emerald-900/10 hover:bg-emerald-500/10 border-zinc-700 shadow-md"
+                                className="h-10 w-10 rounded-xl border-white/10 bg-white text-[#080b10] hover:bg-emerald-100 sm:h-11 sm:w-11"
                                 onClick={switchTokens}
                             >
                                 <ArrowDown size={18} />
                             </Button>
                         </div>
 
-                        <div className="bg-emerald-900/10 dark:bg-emerald-900/10 rounded-lg p-4">
+                        <div className="rounded-xl border border-white/10 bg-white/[0.035] p-3 transition focus-within:border-sky-300/35 focus-within:bg-white/[0.055]">
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-base-muted">
+                                <span className="text-sm font-bold text-white/45">
                                     You receive
                                 </span>
                                 {toToken && toToken.balance && (
-                                    <span className="text-sm text-base-muted font-medium">
+                                    <span className="text-sm text-white/45 font-semibold">
                                         Balance: {Number.parseFloat(toToken.balance).toFixed(4)}
                                     </span>
                                 )}
@@ -386,7 +392,7 @@ const SwapCard = () => {
                                     value={toAmount}
                                     onChange={handleToAmountChange}
                                     placeholder="0.0"
-                                    className="w-full bg-transparent text-2xl font-bold text-emerald-900 dark:text-base-text outline-none"
+                                    className="w-full min-w-0 bg-transparent font-display text-3xl font-bold tracking-[-0.05em] text-white outline-none placeholder:text-white/16 sm:text-4xl"
                                 />
                                 <TokenSelector
                                     selectedToken={toToken}
@@ -402,12 +408,12 @@ const SwapCard = () => {
                         </div>
 
                         {fromToken && toToken && fromAmount && toAmount && (
-                            <div className="rounded-lg p-3 text-sm">
+                            <div className="rounded-xl border border-white/10 bg-black/18 p-3 text-xs sm:text-sm">
                                 <div className="flex justify-between">
-                                    <span className="text-base-muted">
+                                    <span className="text-white/45">
                                         Rate
                                     </span>
-                                    <span className="text-emerald-900 dark:text-base-text">
+                                    <span className="font-semibold text-white/80">
                                         1 {fromToken.symbol} ={" "}
                                         {(
                                             Number(toAmount) /
@@ -417,10 +423,10 @@ const SwapCard = () => {
                                     </span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-base-muted">
+                                    <span className="text-white/45">
                                         Slippage Tolerance
                                     </span>
-                                    <span className="text-emerald-900 dark:text-base-text">
+                                    <span className="font-semibold text-emerald-300">
                                         {slippage}%
                                     </span>
                                 </div>

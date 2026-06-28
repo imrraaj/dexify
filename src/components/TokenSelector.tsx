@@ -64,8 +64,8 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
                 address,
                 name,
                 symbol,
-                decimals,
-                balance,
+                decimals: Number(decimals),
+                balance: ethers.formatUnits(balance, Number(decimals)),
             };
 
             return t;
@@ -110,7 +110,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
             } catch (error) {
                 toast({
                     title: "Invalid Token",
-                    description: error.message,
+                    description: error instanceof Error ? error.message : "Could not add this token.",
                     variant: "destructive",
                 });
             }
@@ -128,6 +128,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
     );
 
     const handleSelectToken = async (token: Token) => {
+        if (!activeChain) return;
         const bal = await fetchBalance(token, activeChain);
         setSelectedToken({ ...token, balance: bal });
         setIsOpen(false);
@@ -139,25 +140,25 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
             <Button
                 variant="ghost"
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-3 hover:bg-emerald-800/10 rounded-lg"
+                className="h-9 shrink-0 gap-1.5 rounded-lg border border-white/10 bg-black/24 px-2.5 text-white hover:bg-white/10 sm:h-10 sm:gap-2 sm:px-3"
             >
                 {selectedToken ? (
                     <>
                         <TokenImage symbol={selectedToken.symbol} />
-                        <span className="text-emerald-900 dark:text-base-text font-medium">
+                        <span className="font-black text-white">
                             {selectedToken.symbol}
                         </span>
                     </>
                 ) : (
-                    <span className="text-base-text">Select token</span>
+                    <span className="text-white">Select token</span>
                 )}
-                <ChevronDown size={16} className="text-base-muted" />
+                <ChevronDown size={16} className="text-white/45" />
             </Button>
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent className="sm:max-w-md bg-base-card border-emerald-900/10 w-11/12">
+                <DialogContent className="max-h-[88vh] w-[94vw] overflow-y-auto rounded-2xl border-white/10 bg-[#0b1017]/96 p-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl sm:max-w-md sm:p-5">
                     <DialogHeader>
-                        <DialogTitle className="text-base-text">
+                        <DialogTitle className="font-display text-white">
                             Select a token
                         </DialogTitle>
                     </DialogHeader>
@@ -167,9 +168,14 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
                                 placeholder="Search by name, symbol, or paste address"
                                 value={searchQuery}
                                 onChange={handleSearchChange}
-                                className="bg-stone-700/10 border-zinc-700 text-base-text"
+                                className="rounded-lg border-white/10 bg-white/[0.06] text-white placeholder:text-white/30 focus-visible:ring-emerald-400"
                                 autoFocus
                             />
+                        </div>
+
+                        <div className="mb-2 flex items-center justify-between px-1 text-xs font-semibold text-white/45">
+                            <span>Popular on {activeChain?.name ?? "this chain"}</span>
+                            <span>{filteredTokens.length} tokens</span>
                         </div>
 
                         <ScrollArea className="h-[300px] pr-3">
@@ -178,16 +184,19 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
                                     <button
                                         key={token.address}
                                         onClick={() => handleSelectToken(token)}
-                                        className="w-full flex items-center justify-between p-3 hover:bg-emerald-900/20 rounded-lg transition-colors"
+                                        className="w-full flex items-center justify-between rounded-lg p-2.5 transition-colors hover:bg-white/[0.07]"
                                     >
                                         <div className="flex items-center gap-3">
                                             <TokenImage symbol={token.symbol} />
                                             <div className="text-left">
-                                                <div className="font-medium text-base-text">
+                                                <div className="font-black text-white">
                                                     {token.symbol}
                                                 </div>
-                                                <div className="text-sm text-base-muted">
+                                                <div className="text-sm text-white/45">
                                                     {token.name}
+                                                </div>
+                                                <div className="font-mono text-[10px] text-white/30">
+                                                    {token.address.slice(0, 6)}…{token.address.slice(-4)}
                                                 </div>
                                             </div>
                                         </div>
@@ -196,7 +205,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
                                                 token.address && (
                                                 <Check
                                                     size={16}
-                                                    className="text-emerald-600"
+                                                    className="text-emerald-300"
                                                 />
                                             )}
                                         </div>
@@ -204,7 +213,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
                                 ))}
 
                                 {filteredTokens.length === 0 && (
-                                    <div className="py-8 text-center text-base-muted">
+                                    <div className="py-8 text-center text-white/45">
                                         No tokens found
                                     </div>
                                 )}

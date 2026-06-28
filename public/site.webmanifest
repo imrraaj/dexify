@@ -1,0 +1,17 @@
+{
+  "name": "DEXify",
+  "short_name": "DEXify",
+  "description": "A zero-fee Uniswap trading terminal for swaps, sends, and TP/SL keeper orders across supported chains.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080B10",
+  "theme_color": "#080B10",
+  "icons": [
+    {
+      "src": "/dexify-mark.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -30,6 +30,12 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
+const decimalToUnits = (value: string, decimals: number): bigint => {
+    const [whole = "0", fraction = ""] = value.split(".");
+    const safeFraction = fraction.slice(0, decimals).padEnd(decimals, "0");
+    return ethers.parseUnits(`${whole || "0"}.${safeFraction}`, decimals);
+};
+
 
 export const updateQuote = async (
     quoterAddress: string,
@@ -177,10 +183,11 @@ export async function approveToken(activeChain: Chain, token: Token, amount: str
         console.log(`Transaction Receipt:`, receipt);
     } catch (error) {
         console.error("Token approval failed:", error);
+        throw error;
     }
 }
 
-export async function executeSwap(activeChain: Chain, fromToken: Token, toToken: Token, fee: number, deadline: number, slippage: number, amountIn: string): Promise<string> {
+export async function executeSwap(activeChain: Chain, fromToken: Token, toToken: Token, fee: number, deadline: number, slippage: number, amountIn: string, expectedAmountOut: string): Promise<string> {
     try {
         const provider = getProvider();
         const swapRouter = new ethers.Contract(
@@ -190,18 +197,15 @@ export async function executeSwap(activeChain: Chain, fromToken: Token, toToken:
         );
         const wallet = await getWallet();
         const signer = await provider.getSigner(wallet);
-        const amountOutMinimum = (Number(amountIn) * (1 - slippage / 100)).toString();
+        void deadline;
+        const minimumOut = Math.max(Number(expectedAmountOut) * (1 - slippage / 100), 0).toString();
         const tx = await swapRouter.exactInputSingle.populateTransaction({
             tokenIn: fromToken.address,
             tokenOut: toToken.address,
             fee: fee,
             recipient: wallet,
-            deadline: deadline,
-            amountIn: ethers.parseUnits(
-                amountIn.toString(),
-                fromToken.decimals,
-            ),
-            amountOutMinimum,
+            amountIn: decimalToUnits(amountIn.toString(), fromToken.decimals),
+            amountOutMinimum: decimalToUnits(minimumOut, toToken.decimals),
             sqrtPriceLimitX96: 0,
         });
 

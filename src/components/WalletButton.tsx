@@ -1,4 +1,4 @@
-import React, { useState, useEffect, act } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { Button } from '@/components/ui/button';
 import { Loader2, ExternalLink } from 'lucide-react';
@@ -19,7 +19,7 @@ interface WalletButtonProps {
   isSwapping: boolean;
   buttonText: string;
   disabled?: boolean;
-  tx: string;
+  tx: string | null;
 }
 
 const WalletButton: React.FC<WalletButtonProps> = ({
@@ -115,7 +115,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       console.error("Failed to connect wallet:", error);
       toast({
         title: "Connection Failed",
-        description: error.message || "Could not connect to wallet",
+        description: error instanceof Error ? error.message : "Could not connect to wallet",
         variant: "destructive",
       });
     } finally {
@@ -127,8 +127,10 @@ const WalletButton: React.FC<WalletButtonProps> = ({
     setIsConnected(false);
     setWalletAddress('');
     setActiveChain(null);
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    provider.destroy();
+    if (window.ethereum) {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      provider.destroy();
+    }
     toast({
       title: "Wallet Disconnected",
       description: "Your wallet has been disconnected",
@@ -143,7 +145,6 @@ const WalletButton: React.FC<WalletButtonProps> = ({
 
     try {
       await onSwap();
-      setDialogOpen(true);
     } catch (error) {
       console.error("Swap error:", error);
     }
@@ -154,6 +155,12 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}`
       : address;
   };
+
+  useEffect(() => {
+    if (tx) {
+      setDialogOpen(true);
+    }
+  }, [tx]);
 
   useEffect(() => {
     checkWalletConnection();
@@ -213,11 +220,11 @@ const WalletButton: React.FC<WalletButtonProps> = ({
   return (
     <>
       <Button
-        disabled={walletAddress && (isConnecting || isSwapping || disabled)}
+        disabled={Boolean(walletAddress) && (isConnecting || isSwapping || disabled)}
         onClick={handleSwap}
-        className={`w-full text-white py-3 rounded-lg transition-all font-bold ${isConnected
-          ? 'bg-gradient-to-r from-emerald-400 to-emerald-500 hover:opacity-90'
-          : 'bg-emerald-600 hover:bg-emerald-500'
+        className={`h-11 w-full rounded-xl py-3 text-sm font-bold transition-all sm:h-12 sm:text-base ${isConnected
+          ? 'bg-white text-[#080b10] hover:bg-emerald-50'
+          : 'bg-emerald-400 text-emerald-950 hover:bg-emerald-300'
           }`}
       >
         {isConnecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -228,14 +235,14 @@ const WalletButton: React.FC<WalletButtonProps> = ({
 
       {isConnected && (
         <div className="flex justify-between items-center mt-2 px-1">
-          <div className="text-sm text-base-muted">
-            Connected: <span className="text-emerald-900 dark:text-base-text">{formatAddress(walletAddress)}</span>
+          <div className="text-sm text-white/45">
+            Connected: <span className="font-semibold text-white/75">{formatAddress(walletAddress)}</span>
           </div>
           <Button
             variant="link"
             size="sm"
             onClick={disconnectWallet}
-            className="text-sm text-base-muted hover:text-base-text p-0"
+            className="p-0 text-sm text-white/45 hover:text-white"
           >
             Disconnect
           </Button>
@@ -243,30 +250,30 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-md bg-base-card border-zinc-700/50">
+        <DialogContent className="w-[94vw] rounded-2xl border-white/10 bg-[#0b1017]/96 p-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl sm:max-w-md sm:p-5">
           <DialogHeader>
-            <DialogTitle className="text-base-text">Transaction Submitted</DialogTitle>
-            <DialogDescription className="text-base-muted">
+            <DialogTitle className="text-white">Transaction Submitted</DialogTitle>
+            <DialogDescription className="text-white/50">
               Your transaction has been submitted to the network
             </DialogDescription>
           </DialogHeader>
 
           <div className="flex flex-col items-center py-6">
-            <div className="w-16 h-16 rounded-full bg-emerald-900/10 flex items-center justify-center mb-4">
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-400/10 ring-1 ring-emerald-400/20">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 6L9 17L4 12" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M20 6L9 17L4 12" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-base-text mb-1">Transaction Confirmed</h3>
-            <p className="text-center text-base-muted mb-4">
+            <h3 className="text-lg font-black text-white mb-1">Transaction Confirmed</h3>
+            <p className="text-center text-white/50 mb-4">
               Your swap has been processed successfully
             </p>
             <Button
               variant="link"
-              className="text-base-muted bg-emerald-900/10 border-zinc-700 hover:bg-emerald-900/50 hover:text-base-text"
+              className="rounded-lg bg-white/[0.06] text-white/55 hover:bg-white/10 hover:text-white"
             >
               <a
-                href={`${activeChain?.blockExplorer}/tx/${tx}`}
+                href={`${activeChain?.blockExplorer}/tx/${tx ?? ""}`}
                 target="_blank" rel="noopener noreferrer">
                 View on Explorer
               </a>
@@ -277,7 +284,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
           <DialogFooter>
             <Button
               onClick={() => setDialogOpen(false)}
-              className="w-full bg-emerald-400/40 hover:bg-emerald-400/40 text-base-text border-zinc-700 hover:border-zinc-600"
+              className="w-full rounded-xl bg-white text-[#080b10] hover:bg-emerald-50"
             >
               Close
             </Button>

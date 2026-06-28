@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer } from "react";
-import { ArrowDown, Settings, RefreshCw, Clock, TrendingUp, TrendingDown } from "lucide-react";
+import { Settings, RefreshCw, Clock, TrendingUp, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,7 +9,7 @@ import WalletButton from "./WalletButton";
 import SwapSettings from "./SwapSettings";
 import { useToast } from "@/hooks/use-toast";
 import { useSettings } from "@/hooks/use-setting";
-import { Token } from "@/config/chains";
+import { getChainTokens, Token } from "@/config/chains";
 import { cancelOrder, createBuyOrder, createSellOrder, getUserOrders } from "@/lib/utils";
 
 
@@ -130,8 +130,8 @@ const LimitOrderCard = () => {
             });
             dispatch({
                 type: "SET_TOKENS",
-                payload: Object.values(activeChain.tokens).filter(token =>
-                    token.address !== activeChain.tokens.nativeCurrencyAddress.address
+                payload: getChainTokens(activeChain).filter(token =>
+                    token.address.toLowerCase() !== activeChain.tokens.nativeCurrencyAddress.address.toLowerCase()
                 ),
             });
             dispatch({ type: "RESET_AMOUNTS" });
@@ -235,26 +235,29 @@ const LimitOrderCard = () => {
     };
 
     if (activeChain === null) {
-        return <p className="font-semibold text-center my-8 text-emerald-500 dark:text-base-muted">No Available chain</p>;
+        return <p className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-center font-semibold text-white/60">No available chain</p>;
     }
 
     if (!activeChain.zeLimiterAddress) {
-        return <p className="font-semibold text-center my-8 text-emerald-500 dark:text-base-muted">Coming soon for {activeChain.name}</p>;
+        return <p className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-center font-semibold text-white/60">TP / SL orders are coming soon for {activeChain.name}</p>;
     }
 
     return (
-        <div className="w-full max-w-lg mx-auto space-y-4">
-            <Card className="bg-transparent border-zinc-700/50 dark:border-zinc-700/50 shadow-2xl">
-                <CardContent className="p-4">
+        <div className="w-full max-w-lg mx-auto space-y-3 sm:space-y-4">
+            <Card className="overflow-hidden rounded-2xl border-white/10 bg-[#0b1017]/94 text-white shadow-xl shadow-black/30 backdrop-blur-xl">
+                <CardContent className="p-3 sm:p-4">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-medium text-emerald-900 dark:text-base-text">
-                            Limit Orders
-                        </h2>
-                        <div className="flex gap-2 items-center">
+                        <div>
+                            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-300/70">Keeper orders</p>
+                            <h2 className="font-display text-2xl font-extrabold tracking-[-0.05em] text-white">
+                                TP / SL Orders
+                            </h2>
+                        </div>
+                        <div className="flex items-center gap-1.5 sm:gap-2">
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-base-muted hover:text-base-text hover:bg-emerald-800/10"
+                                className="h-8 w-8 rounded-lg text-white/50 hover:bg-white/10 hover:text-white sm:h-9 sm:w-9"
                                 onClick={() =>
                                     dispatch({
                                         type: "SET_SHOW_SETTINGS",
@@ -267,14 +270,14 @@ const LimitOrderCard = () => {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-base-muted hover:text-base-text hover:bg-emerald-800/10"
+                                className="h-8 w-8 rounded-lg text-white/50 hover:bg-white/10 hover:text-white sm:h-9 sm:w-9"
                                 onClick={loadUserOrders}
                             >
                                 <RefreshCw size={20} />
                             </Button>
-                            <div className="rounded-full bg-emerald-900/20 py-1 px-3 flex items-center gap-1.5">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow"></span>
-                                <span className="text-xs font-medium text-emerald-900 dark:text-base-text">
+                            <div className="hidden rounded-md border border-emerald-400/15 bg-emerald-400/8 px-2.5 py-1.5 sm:flex items-center gap-1.5">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse-slow"></span>
+                                <span className="text-xs font-bold text-emerald-200">
                                     {activeChain.name}
                                 </span>
                             </div>
@@ -283,17 +286,17 @@ const LimitOrderCard = () => {
 
                     {/* Order Type Tabs */}
                     <Tabs value={orderType} onValueChange={handleOrderTypeChange} className="mb-4">
-                        <TabsList className="grid w-full grid-cols-2 bg-emerald-900/10">
+                        <TabsList className="grid h-10 w-full grid-cols-2 rounded-xl border border-white/10 bg-white/[0.05] p-1 sm:h-11">
                             <TabsTrigger
                                 value="buy"
-                                className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white flex items-center gap-2"
+                                className="flex items-center gap-2 rounded-lg text-white/55 data-[state=active]:bg-white data-[state=active]:font-bold data-[state=active]:text-[#080b10]"
                             >
                                 <TrendingUp size={16} />
                                 Buy
                             </TabsTrigger>
                             <TabsTrigger
                                 value="sell"
-                                className="data-[state=active]:bg-red-600 data-[state=active]:text-white flex items-center gap-2"
+                                className="flex items-center gap-2 rounded-lg text-white/55 data-[state=active]:bg-red-400 data-[state=active]:font-bold data-[state=active]:text-red-950"
                             >
                                 <TrendingDown size={16} />
                                 Sell
@@ -316,15 +319,15 @@ const LimitOrderCard = () => {
                         />
                     )}
 
-                    <div className="space-y-4">
+                    <div className="space-y-2.5 sm:space-y-3">
                         {/* Token Selection */}
-                        <div className="bg-emerald-800/10 dark:bg-emerald-900/10 rounded-lg p-4">
+                        <div className="rounded-xl border border-white/10 bg-white/[0.045] p-3">
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-base-muted">
+                                <span className="text-sm font-bold text-white/45">
                                     Token
                                 </span>
                                 {selectedToken && selectedToken.balance && (
-                                    <span className="text-sm text-base-muted font-medium">
+                                    <span className="text-sm text-white/45 font-semibold">
                                         Balance: {Number.parseFloat(selectedToken.balance).toFixed(4)}
                                     </span>
                                 )}
@@ -343,9 +346,9 @@ const LimitOrderCard = () => {
                         </div>
 
                         {/* Amount Input */}
-                        <div className="bg-emerald-800/10 dark:bg-emerald-900/10 rounded-lg p-4">
+                        <div className="rounded-xl border border-white/10 bg-white/[0.035] p-3 transition focus-within:border-emerald-400/35 focus-within:bg-white/[0.055]">
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-base-muted">
+                                <span className="text-sm font-bold text-white/45">
                                     {orderType === "buy" ? "ETH Amount" : "Token Amount"}
                                 </span>
                             </div>
@@ -364,23 +367,23 @@ const LimitOrderCard = () => {
                                         }
                                     }}
                                     placeholder="0.0"
-                                    className="w-full bg-transparent text-2xl font-bold text-emerald-900 dark:text-base-text outline-none"
+                                    className="w-full min-w-0 bg-transparent font-display text-3xl font-bold tracking-[-0.05em] text-white outline-none placeholder:text-white/16 sm:text-4xl"
                                 />
-                                <span className="text-lg font-medium text-base-muted ml-2">
+                                <span className="ml-2 text-lg font-bold text-white/40">
                                     {orderType === "buy" ? "ETH" : selectedToken?.symbol || "TOKEN"}
                                 </span>
                             </div>
                         </div>
 
                         {/* Price Input */}
-                        <div className="bg-emerald-800/10 dark:bg-emerald-900/10 rounded-lg p-4">
+                        <div className="rounded-xl border border-white/10 bg-white/[0.035] p-3 transition focus-within:border-sky-300/35 focus-within:bg-white/[0.055]">
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-base-muted">
+                                <span className="text-sm font-bold text-white/45">
                                     Target Price (USD)
                                 </span>
                             </div>
                             <div className="flex items-center">
-                                <span className="text-2xl font-bold text-base-muted mr-2">$</span>
+                                <span className="mr-2 text-3xl font-bold text-emerald-300/75">$</span>
                                 <input
                                     type="text"
                                     value={priceUSD}
@@ -391,36 +394,36 @@ const LimitOrderCard = () => {
                                         }
                                     }}
                                     placeholder="0.00"
-                                    className="w-full bg-transparent text-2xl font-bold text-emerald-900 dark:text-base-text outline-none"
+                                    className="w-full min-w-0 bg-transparent font-display text-3xl font-bold tracking-[-0.05em] text-white outline-none placeholder:text-white/16 sm:text-4xl"
                                 />
-                                <span className="text-lg font-medium text-base-muted ml-2">USD</span>
+                                <span className="ml-2 text-lg font-bold text-white/40">USD</span>
                             </div>
                         </div>
 
                         {/* Order Summary */}
                         {selectedToken && (orderType === "buy" ? ethAmount : tokenAmount) && priceUSD && (
-                            <div className="rounded-lg p-3 text-sm border border-emerald-700/30">
+                            <div className="rounded-xl border border-white/10 bg-black/18 p-3 text-xs sm:text-sm">
                                 <div className="flex justify-between mb-1">
-                                    <span className="text-base-muted">Order Type</span>
+                                    <span className="text-white/45">Order Type</span>
                                     <Badge variant={orderType === "buy" ? "default" : "destructive"}>
                                         {orderType.toUpperCase()}
                                     </Badge>
                                 </div>
                                 <div className="flex justify-between mb-1">
-                                    <span className="text-base-muted">Token</span>
-                                    <span className="text-emerald-900 dark:text-base-text">
+                                    <span className="text-white/45">Token</span>
+                                    <span className="font-semibold text-white/80">
                                         {selectedToken.symbol}
                                     </span>
                                 </div>
                                 <div className="flex justify-between mb-1">
-                                    <span className="text-base-muted">Amount</span>
-                                    <span className="text-emerald-900 dark:text-base-text">
+                                    <span className="text-white/45">Amount</span>
+                                    <span className="font-semibold text-white/80">
                                         {orderType === "buy" ? `${ethAmount} ETH` : `${tokenAmount} ${selectedToken.symbol}`}
                                     </span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-base-muted">Target Price</span>
-                                    <span className="text-emerald-900 dark:text-base-text">
+                                    <span className="text-white/45">Target Price</span>
+                                    <span className="font-semibold text-emerald-300">
                                         ${priceUSD}
                                     </span>
                                 </div>
@@ -439,37 +442,38 @@ const LimitOrderCard = () => {
             </Card>
 
             {/* User Orders */}
-            <Card className="bg-transparent border-zinc-700/50 dark:border-zinc-700/50 shadow-2xl">
-                <CardContent className="p-4">
+            <Card className="overflow-hidden rounded-2xl border-white/10 bg-[#0b1017]/78 text-white shadow-xl shadow-black/20 backdrop-blur-xl">
+                <CardContent className="p-3 sm:p-4">
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-medium text-emerald-900 dark:text-base-text">
+                        <h3 className="flex items-center gap-2 font-display text-lg font-extrabold tracking-[-0.04em] text-white">
+                            <Clock size={17} className="text-emerald-300" />
                             Your Orders
                         </h3>
-                        <Badge variant="outline">{userOrders.length}</Badge>
+                        <Badge variant="outline" className="border-white/10 text-white/60">{userOrders.length}</Badge>
                     </div>
 
                     {userOrders.length === 0 ? (
-                        <p className="text-center text-base-muted py-4">No orders found</p>
+                        <p className="text-center text-white/45 py-4">No orders found</p>
                     ) : (
                         <div className="space-y-2 max-h-64 overflow-y-auto">
                             {userOrders.map((order, index) => (
                                 <div
                                     key={index}
-                                    className="flex items-center justify-between p-3 bg-emerald-800/5 rounded-lg border border-emerald-700/20"
+                                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.035] p-3"
                                 >
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <Badge variant="outline" className={`text-xs outline-none border-none text-white ${order.odt === 0 ? "bg-emerald-600/50" : "bg-red-600/50"}`}>
+                                            <Badge variant="outline" className={`border-none text-xs outline-none ${order.odt === 0 ? "bg-emerald-400/15 text-emerald-200" : "bg-red-500/20 text-red-200"}`}>
                                                 {order.odt === 0 ? "BUY" : "SELL"}
                                             </Badge>
-                                            <span className="text-sm font-medium text-emerald-900 dark:text-base-text">
+                                            <span className="text-sm font-bold text-white/80">
                                                 Order #{order.orderId}
                                             </span>
                                         </div>
-                                        <div className="text-xs text-base-muted">
+                                        <div className="text-xs text-white/45">
                                             Amount: {parseFloat(order.amountIn) / 1e18} {order.odt === 0 ? "ETH" : order.tokenInInfo}
                                         </div>
-                                        <div className="text-xs text-base-muted">
+                                        <div className="text-xs text-white/45">
                                             Price: ${parseFloat(order.priceUSD) / 1e6} USD
                                         </div>
                                     </div>
@@ -478,7 +482,7 @@ const LimitOrderCard = () => {
                                             variant="outline"
                                             size="sm"
                                             onClick={() => handleCancelOrder(order.orderId)}
-                                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                            className="border-white/10 bg-white/[0.04] text-red-200 hover:bg-red-500/10 hover:text-red-100"
                                         >
                                             Cancel
                                         </Button>

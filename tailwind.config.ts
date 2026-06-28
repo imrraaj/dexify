@@ -20,12 +20,14 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'sans': ["Rubik", "sans-serif"],
+				'sans': ["Instrument Sans", "sans-serif"],
+				'display': ["Instrument Sans", "sans-serif"],
+				'mono': ["IBM Plex Mono", "ui-monospace", "monospace"],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
-				ring: '#10b981',
+				ring: '#4ade80',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {

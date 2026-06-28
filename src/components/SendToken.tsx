@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import TokenSelector from "./TokenSelector";
 import { useToast } from "@/hooks/use-toast";
 import { useSettings } from "@/hooks/use-setting";
 import WalletButton from "./WalletButton";
 import { Token } from "@/config/chains";
 import { ethers } from "ethers";
-import { approveToken, sendToken } from "@/lib/utils";
+import { sendToken } from "@/lib/utils";
 
 // Define the state type
 interface SendTokenState {
@@ -38,7 +37,7 @@ const sendTokenReducer = (
         case "SET_SELECTED_TOKEN":
             return { ...state, selectedToken: action.payload };
         case "SET_AMOUNT":
-            if (action.payload !== "" && !/^[0-9]*[.,]?[0-9]*$/.test(action.payload)) return;
+            if (action.payload !== "" && !/^[0-9]*[.,]?[0-9]*$/.test(action.payload)) return state;
             return { ...state, amount: action.payload };
         case "SET_RECIPIENT":
             return { ...state, recipient: action.payload };
@@ -147,6 +146,7 @@ const SendToken = () => {
                 variant: "destructive",
             });
             console.error("Send error:", error);
+            throw error;
         } finally {
             dispatch({ type: "SET_IS_SENDING", payload: false });
         }
@@ -169,32 +169,39 @@ const SendToken = () => {
         return "Send";
     };
 
+    if (activeChain === null) {
+        return <p className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-center font-semibold text-white/60">No available chain</p>;
+    }
+
     return (
         <div className="w-full max-w-lg mx-auto">
-            <Card className="bg-transparent border-zinc-700/50 shadow-xl">
-                <CardContent className="p-4">
+            <Card className="overflow-hidden rounded-2xl border-white/10 bg-[#0b1017]/94 text-white shadow-xl shadow-black/30 backdrop-blur-xl">
+                <CardContent className="p-3 sm:p-4">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-medium text-emerald-900 dark:text-base-text">
-                            Send
-                        </h2>
-                        <div className="rounded-full bg-emerald-900/20 py-1 px-3 flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow"></span>
-                            <span className="text-xs font-medium text-emerald-900 dark:text-base-text">
+                        <div>
+                            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-300/70">Wallet transfer</p>
+                            <h2 className="font-display text-2xl font-extrabold tracking-[-0.05em] text-white">
+                                Send
+                            </h2>
+                        </div>
+                        <div className="hidden rounded-md border border-emerald-400/15 bg-emerald-400/8 px-2.5 py-1.5 sm:flex items-center gap-1.5">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse-slow"></span>
+                            <span className="text-xs font-bold text-emerald-200">
                                 {activeChain.name}
                             </span>
                         </div>
                     </div>
 
-                    <div className="space-y-4">
-                        <div className="bg-emerald-900/10 rounded-lg p-4">
+                    <div className="space-y-2.5 sm:space-y-3">
+                        <div className="rounded-xl border border-white/10 bg-white/[0.045] p-3 transition focus-within:border-emerald-400/35 focus-within:bg-white/[0.065]">
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm font-medium text-base-muted">
+                                <span className="text-sm font-bold text-white/45">
                                     Token
                                 </span>
                                 {selectedToken &&
                                     selectedToken.balance !== undefined && (
                                         <span
-                                            className="text-sm text-base-muted cursor-pointer font-medium"
+                                            className="cursor-pointer text-xs font-semibold text-emerald-300/75 hover:text-emerald-200 sm:text-sm"
                                             onClick={() => dispatch({ type: "SET_AMOUNT",payload: selectedToken.balance })}
                                         >
                                             Balance: {selectedToken.balance}
@@ -207,7 +214,7 @@ const SendToken = () => {
                                     value={amount}
                                     onChange={(e) => dispatch({ type: "SET_AMOUNT", payload: e.target.value })}
                                     placeholder="0.0"
-                                    className="border-none bg-transparent text-2xl font-bold text-emerald-900 dark:text-base-text outline-none w-full"
+                                    className="w-full min-w-0 border-none bg-transparent font-display text-3xl font-bold tracking-[-0.05em] text-white outline-none placeholder:text-white/16 sm:text-4xl"
                                 />
                                 <TokenSelector
                                     selectedToken={selectedToken}
@@ -216,9 +223,9 @@ const SendToken = () => {
                             </div>
                         </div>
 
-                        <div className="bg-emerald-900/10 rounded-lg p-4">
+                        <div className="rounded-xl border border-white/10 bg-white/[0.035] p-3 transition focus-within:border-sky-300/35 focus-within:bg-white/[0.055]">
                             <div className="mb-2">
-                                <span className="text-sm font-medium text-base-muted">
+                                <span className="text-sm font-bold text-white/45">
                                     Recipient Address
                                 </span>
                             </div>
@@ -227,7 +234,7 @@ const SendToken = () => {
                                 value={recipient}
                                 onChange={(e) => dispatch({ type: "SET_RECIPIENT", payload: e.target.value })}
                                 placeholder="0x..."
-                                className="border-none bg-transparent text-base font-bold text-emerald-900 dark:text-base-text outline-none w-full"
+                                className="w-full border-none bg-transparent font-mono text-base font-bold text-white outline-none placeholder:text-white/18"
                             />
                         </div>
 

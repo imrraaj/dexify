@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Chain, chains } from "@/config/chains";
+import { Chain, chains, getChainTokens } from "@/config/chains";
 import { useToast } from "@/hooks/use-toast";
 import { Token } from "@/config/chains";
 import { UnsupportedChainError } from "@/components/UnsupportedChainError"
 
 export interface SettingsContextType {
-    activeChain: Chain;
-    setActiveChain: (chain: Chain) => void;
+    activeChain: Chain | null;
+    setActiveChain: (chain: Chain | null) => void;
     activeChainTokenList: Token[];
     setActiveChainTokenList: (tokens: Token[]) => void;
     detectChain: () => Promise<void>;
@@ -21,20 +21,20 @@ export const SettingsProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const [activeChain, setActiveChain] = useState<Chain>(chains.base);
+    const [activeChain, setActiveChain] = useState<Chain | null>(chains.base);
     const [activeChainTokenList, setActiveChainTokenList] = useState<Token[]>(
-        activeChain && activeChain.tokens ? Object.values(activeChain.tokens) : []
+        activeChain ? getChainTokens(activeChain) : []
     );
     useEffect(() => {
-        setActiveChainTokenList(activeChain && activeChain.tokens ? Object.values(activeChain.tokens) : []);
+        setActiveChainTokenList(activeChain ? getChainTokens(activeChain) : []);
     }, [activeChain]);
 
     const { toast } = useToast();
 
     useEffect(() => {
         const savedChain = localStorage.getItem("chain");
-        if (savedChain && chains[savedChain]) {
-            setActiveChain(chains[savedChain]);
+        if (savedChain && savedChain in chains) {
+            setActiveChain(chains[savedChain as keyof typeof chains]);
         }
         detectChain();
     }, []);
@@ -44,7 +44,7 @@ export const SettingsProvider = ({
         localStorage.setItem(
             "chain",
             Object.keys(chains).find(
-                (key) => chains[key].chainId === activeChain.chainId
+                (key) => chains[key as keyof typeof chains].chainId === activeChain.chainId
             ) || "base"
         );
 
@@ -65,9 +65,9 @@ export const SettingsProvider = ({
                 });
                 const networkId = parseInt(chainId, 16);
                 const chainKey = Object.keys(chains).find(
-                    (key) => chains[key].chainId === networkId
-                );
-                setActiveChain(chains[chainKey] ?? chains.base);
+                    (key) => chains[key as keyof typeof chains].chainId === networkId
+                ) as keyof typeof chains | undefined;
+                setActiveChain(chainKey ? chains[chainKey] : null);
             }
         } catch (error) {
             console.error("Error detecting chain:", error);
